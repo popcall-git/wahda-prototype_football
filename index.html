@@ -75,11 +75,14 @@
   .livebar.on{background:linear-gradient(120deg,#D64545,#A82F2F);
     box-shadow:0 8px 20px rgba(214,69,69,.24)}
   .livebar.next{background:linear-gradient(120deg,#22201D,#161513);box-shadow:0 8px 20px rgba(0,0,0,.16)}
+  .livebar + .livebar{margin-top:7px}
+  .livebar .lb-tag{flex:none}
   .live-dot{width:7px;height:7px;border-radius:50%;background:#fff;flex:none;
     box-shadow:0 0 0 0 rgba(255,255,255,.85);animation:pulse 1.6s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.75)}70%{box-shadow:0 0 0 8px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
   .livebar .lb-main{flex:1;min-width:0}
-  .livebar .lb-t{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .livebar .lb-t{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;min-width:0}
+  .livebar .lb-t > span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .livebar .lb-s{font-size:11.5px;opacity:.82;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .livebar .lb-act{font-size:11.5px;font-weight:700;background:rgba(255,255,255,.18);border-radius:999px;
     padding:5px 11px;flex:none}
@@ -268,6 +271,20 @@
   .lb-num{font-size:34px;font-weight:800;letter-spacing:-1px;flex:none;line-height:1}
   .lb-num em{font-size:14px;font-weight:600;color:#8C8A85;font-style:normal;margin:0 4px}
   .lb-clock{text-align:center;font-size:11.5px;color:#A8A6A1;margin-top:12px}
+  /* 视频直播播放区 */
+  .vstage{position:relative;margin:2px 20px 14px;border-radius:16px;overflow:hidden;aspect-ratio:16/9;
+    background:linear-gradient(135deg,#2A3B35,#151A18 58%,#0D1110);display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(255,255,255,.07)}
+  .vstage .vs-badge{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;
+    font-size:10px;font-weight:800;letter-spacing:.4px;background:#D64545;padding:4px 8px;border-radius:6px}
+  .vstage .vs-play{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.93);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.4)}
+  .vstage .vs-play svg{margin-left:3px}
+  .vstage .vs-foot{position:absolute;left:0;right:0;bottom:0;padding:24px 12px 10px;display:flex;align-items:center;gap:8px;
+    font-size:10.5px;color:#D7D5D0;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.68))}
+  .vstage .vs-foot b{font-weight:700;color:#fff;letter-spacing:.2px}
+  .vstage.dim{filter:grayscale(.5) brightness(.82)}
+  .vstage .vs-note{font-size:11.5px;color:#C9C7C2;text-align:center;padding:0 26px;line-height:1.55}
   .stx{margin:0 20px;background:#211F1C;border-radius:14px;padding:14px 16px}
   .stx h5{font-size:12px;font-weight:700;color:#A8A6A1;letter-spacing:.3px;margin-bottom:12px}
   .stat{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:11.5px}
@@ -492,8 +509,7 @@
   <h1>Wahda Prototype · Football Zone</h1>
   <div class="head-actions">
     <div class="seg" id="stateSeg">
-      <button data-state="A" class="on" data-cn="非比赛日" data-en="No match today">非比赛日</button>
-      <button data-state="B" data-cn="比赛日" data-en="Matchday">比赛日</button>
+      <button data-state="B" class="on" data-cn="比赛日" data-en="Matchday">比赛日</button>
       <button data-state="C" data-cn="间歇期" data-en="Off-season">间歇期</button>
     </div>
     <button class="lang-toggle" id="langBtn" onclick="toggleLang()">中文</button>
@@ -520,18 +536,18 @@
         <span data-cn="搜索球队、赛事、场次" data-en="Search clubs, competitions, matches">搜索球队、赛事、场次</span>
       </div>
 
-      <!-- 直播入口 · 比赛日 -->
+      <!-- 视频直播入口（位于下一场预告之上） -->
       <div class="livebar on" data-only="B" id="liveBarOn" onclick="openLive(LIVE_ID)">
         <span class="live-dot"></span>
         <div class="lb-main">
-          <div class="lb-t"><span class="lb-tag">LIVE</span><span id="lbOnT">悉尼 FC 1 - 1 墨尔本胜利</span></div>
-          <div class="lb-s" id="lbOnS">62′ · 实时战况与数据</div>
+          <div class="lb-t"><span class="lb-tag" data-cn="视频直播" data-en="Live video">视频直播</span><span id="lbOnT">悉尼 FC 1 - 1 墨尔本胜利</span></div>
+          <div class="lb-s" id="lbOnS">62′ · 视频直播 · 实时数据</div>
         </div>
-        <span class="lb-act" data-cn="进入" data-en="Enter">进入</span>
+        <span class="lb-act" data-cn="观看" data-en="Watch">观看</span>
       </div>
 
-      <!-- 直播入口 · 非比赛日 -->
-      <div class="livebar next" data-only="A" id="liveBarNext" onclick="openMatch(NEXT_ID)">
+      <!-- 下一场预告 -->
+      <div class="livebar next" data-only="B" id="liveBarNext" onclick="openMatch(NEXT_ID)">
         <div class="lb-main">
           <div class="lb-t" id="lbNextT"></div>
           <div class="lb-s" id="lbNextS"></div>
@@ -547,12 +563,12 @@
           <div class="bn-t" id="bnFeatureT" data-cn="新赛季揭幕战门票开售" data-en="New season opener on sale">新赛季揭幕战门票开售</div>
           <div class="bn-s" id="bnFeatureS" data-cn="关注你支持的俱乐部，开票第一时间收到通知" data-en="Follow your club and get notified the moment tickets drop">关注你支持的俱乐部，开票第一时间收到通知</div>
         </div>
-        <div class="bn bn2" id="bnHomePass" data-only="AB" onclick="openClub('SYD')">
+        <div class="bn bn2" id="bnHomePass" data-only="B" onclick="openClub('SYD')">
           <span class="bn-tag" data-cn="会员专享" data-en="Members">会员专享</span>
           <div class="bn-t" id="bnHomePassT" data-cn="主场联票 · 8 折" data-en="Home pass · 20% off">主场联票 · 8 折</div>
           <div class="bn-s" id="bnHomePassS" data-cn="同一俱乐部三场主场赛事，一票畅看" data-en="Three home fixtures from one club on a single pass">同一俱乐部三场主场赛事，一票畅看</div>
         </div>
-        <div class="bn bn3" data-only="AB" onclick="go('pg-fixtures')">
+        <div class="bn bn3" data-only="B" onclick="go('pg-fixtures')">
           <span class="bn-tag">Australia Cup</span>
           <div class="bn-t" data-cn="半决赛赛程公布" data-en="Semi-final fixtures released">半决赛赛程公布</div>
           <div class="bn-s" data-cn="查看对阵与开球时间" data-en="See the draw and kick-off times">查看对阵与开球时间</div>
@@ -567,23 +583,23 @@
       <div class="cgrid" id="clubGridHome"></div>
 
       <!-- 正在售票 -->
-      <div class="sec-h" data-only="AB"><h3 data-cn="正在售票" data-en="On sale now">正在售票</h3>
+      <div class="sec-h" data-only="B"><h3 data-cn="正在售票" data-en="On sale now">正在售票</h3>
         <span class="more" onclick="go('pg-fixtures')"><span data-cn="全部" data-en="All">全部</span> ›</span></div>
 
-      <div id="homeHero" data-only="AB"></div>
+      <div id="homeHero" data-only="B"></div>
 
-      <div class="rail" data-only="AB" style="margin-top:11px" id="homeOnSale"></div>
+      <div class="rail" data-only="B" style="margin-top:11px" id="homeOnSale"></div>
 
       <!-- 赛事预告 -->
-      <div class="sec-h" data-only="AB"><h3 data-cn="赛事预告" data-en="Upcoming">赛事预告</h3>
+      <div class="sec-h" data-only="B"><h3 data-cn="赛事预告" data-en="Upcoming">赛事预告</h3>
         <span class="more" onclick="go('pg-fixtures')"><span data-cn="全部赛程" data-en="All fixtures">全部赛程</span> ›</span></div>
 
-      <div class="rows" data-only="AB" id="homeUpcoming"></div>
+      <div class="rows" data-only="B" id="homeUpcoming"></div>
 
       <!-- 赛事预告 · 间歇期空态 -->
       <div class="empty" data-only="C">
         <b data-cn="新赛季赛程尚未公布" data-en="Next season's fixtures are not out yet">新赛季赛程尚未公布</b>
-        <p data-cn="赛程公布后我们会第一时间通知你" data-en="We\u2019ll notify you as soon as the fixture list is released.">赛程公布后我们会第一时间通知你</p>
+        <p data-cn="赛程公布后我们会第一时间通知你" data-en="We’ll notify you as soon as the fixture list is released.">赛程公布后我们会第一时间通知你</p>
         <button class="btn btn-soft" onclick="openSheet('onSale')" data-cn="预约开票提醒" data-en="Notify me">预约开票提醒</button>
       </div>
 
@@ -663,7 +679,7 @@
         <button class="back-btn" style="color:#fff" onclick="goBack()" aria-label="返回">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
         </button>
-        <span class="nav-title" style="color:#fff" data-cn="实时战况" data-en="Live">实时战况</span>
+        <span class="nav-title" style="color:#fff" data-cn="视频直播" data-en="Live video">视频直播</span>
       </div>
       <div class="scroll" id="liveBody"></div>
     </div>
@@ -874,7 +890,7 @@
       <span class="radio"></span>
     </button>
     <button class="sopt" data-k="live" onclick="pick(this)">
-      <div class="sopt-t"><b data-cn="开播提醒" data-en="Live alert">开播提醒</b><span data-cn="比赛开始时通知我进入实时战况" data-en="Notify me when the live match centre opens">比赛开始时通知我进入实时战况</span></div>
+      <div class="sopt-t"><b data-cn="开播提醒" data-en="Live alert">开播提醒</b><span data-cn="视频直播开始时通知我" data-en="Notify me when the live video starts">视频直播开始时通知我</span></div>
       <span class="radio"></span>
     </button>
 
@@ -1037,7 +1053,7 @@ var ORDERS = [
 var RMK = {
   onSale:  {cn:'开票提醒', en:'On-sale alert',  dCn:'门票开售时通知我',           dEn:'Notify me when tickets go on sale'},
   kickOff: {cn:'开赛提醒', en:'Kick-off alert', dCn:'开球前 1 小时通知我',        dEn:'Notify me 1 hour before kick-off'},
-  live:    {cn:'开播提醒', en:'Live alert',     dCn:'比赛开始时通知我进入实时战况', dEn:'Notify me when the live match centre opens'}
+  live:    {cn:'开播提醒', en:'Live alert',     dCn:'视频直播开始时通知我', dEn:'Notify me when the live video starts'}
 };
 
 /* ══════════ 渲染工具 ══════════ */
@@ -1226,8 +1242,8 @@ function renderLivebar(){
   if (m){
     document.getElementById('lbOnT').setAttribute('data-cn', clubById(m.h).cn + ' ' + m.sc[0] + ' - ' + m.sc[1] + ' ' + clubById(m.a).cn);
     document.getElementById('lbOnT').setAttribute('data-en', enName(clubById(m.h)) + ' ' + m.sc[0] + ' - ' + m.sc[1] + ' ' + enName(clubById(m.a)));
-    document.getElementById('lbOnS').setAttribute('data-cn', m.min + '′ · 实时战况与数据');
-    document.getElementById('lbOnS').setAttribute('data-en', m.min + '′ · live score and match data');
+    document.getElementById('lbOnS').setAttribute('data-cn', m.min + '′ · 视频直播 · 实时数据');
+    document.getElementById('lbOnS').setAttribute('data-en', m.min + '′ · live video and match data');
   }
   var n = matchById(NEXT_ID);
   if (n){
@@ -1256,9 +1272,9 @@ function openMatch(id){
     btns = '<button class="btn btn-primary" onclick="openBuy(\'' + m.id + '\')" data-cn="立即购票" data-en="Buy tickets">立即购票</button>'
          + '<button class="btn btn-soft" onclick="openSheet(\'kickOff\',\'' + m.id + '\')" data-cn="♡ 提醒我" data-en="♡ Remind me">♡ 提醒我</button>';
   } else if (m.st === 'live'){
-    btns = '<button class="btn btn-primary btn-block" onclick="openLive(\'' + m.id + '\')" data-cn="进入实时战况" data-en="Enter live match centre">进入实时战况</button>';
+    btns = '<button class="btn btn-primary btn-block" onclick="openLive(\'' + m.id + '\')" data-cn="观看视频直播" data-en="Watch live video">观看视频直播</button>';
   } else if (m.st === 'sold'){
-    btns = '<button class="btn btn-primary" style="background:#6B6A66" onclick="openLive(\'' + m.id + '\')" data-cn="进入实时战况" data-en="Live match centre">进入实时战况</button>'
+    btns = '<button class="btn btn-primary" style="background:#6B6A66" onclick="openLive(\'' + m.id + '\')" data-cn="观看视频直播" data-en="Watch live video">观看视频直播</button>'
          + '<button class="btn btn-soft" onclick="openSheet(\'live\',\'' + m.id + '\')" data-cn="♡ 开播提醒" data-en="♡ Live alert">♡ 开播提醒</button>';
   } else if (m.st === 'soon'){
     btns = '<button class="btn btn-primary" onclick="openSheet(\'onSale\',\'' + m.id + '\')" data-cn="开票提醒我" data-en="Notify me when on sale">开票提醒我</button>'
@@ -1292,9 +1308,9 @@ function openMatch(id){
           + '<div style="text-align:center;margin-top:6px">' + bigScore(m) + '</div>';
   }
 
-  /* 直播入口：可点进实时战况 / 战报 */
-  var liveKvCn = (m.st === 'done') ? '查看战报与数据' : '实时战况 · 数据与集锦';
-  var liveKvEn = (m.st === 'done') ? 'Match report and data' : 'Live data and highlights';
+  /* 视频直播入口：可点进直播页 / 战报 */
+  var liveKvCn = (m.st === 'done') ? '查看战报与数据' : '视频直播 · 数据与集锦';
+  var liveKvEn = (m.st === 'done') ? 'Match report and data' : 'Live video, data and highlights';
 
   document.getElementById('matchBody').innerHTML =
       '<div class="hero" style="margin-bottom:14px">'
@@ -1320,7 +1336,7 @@ function openMatch(id){
     + '<div class="ph">' + info
     +   '<div class="kv"><span data-cn="入场方式" data-en="Entry">入场方式</span><b data-cn="电子票 · 动态码核销" data-en="E-ticket · rotating code">电子票 · 动态码核销</b></div>'
     +   '<div class="kv"><span data-cn="退改政策" data-en="Refunds">退改政策</span><b data-cn="延期或取消全额退" data-en="Full refund if postponed or cancelled">延期或取消全额退</b></div>'
-    +   '<div class="kv" role="button" tabindex="0" onclick="openLive(\'' + m.id + '\')"><span data-cn="直播" data-en="Live">直播</span>'
+    +   '<div class="kv" role="button" tabindex="0" onclick="openLive(\'' + m.id + '\')"><span data-cn="视频直播" data-en="Live video">视频直播</span>'
     +     '<b style="color:var(--brand-dark)" data-cn="' + liveKvCn + ' ›" data-en="' + liveKvEn + ' ›">' + liveKvCn + ' ›</b></div>'
     + '</div>'
     + '<div class="sec-h"><h3 data-cn="同队其他场次" data-en="More fixtures">同队其他场次</h3></div>'
@@ -1343,10 +1359,33 @@ function openLive(id){
   if (!m) return;
   var isLive = m.st === 'live';
   var H = clubById(m.h), A = clubById(m.a);
-  var head = '', extra = '';
+  var head = '', extra = '', stage = '';
+  var PLAY = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#161513"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  if (isLive){
+    stage = '<div class="vstage">'
+          +   '<span class="vs-badge"><span class="live-dot" style="width:6px;height:6px"></span>LIVE</span>'
+          +   '<div class="vs-play">' + PLAY + '</div>'
+          +   '<div class="vs-foot"><b>Wahda Live</b>'
+          +     '<span data-cn="1.2 万人在看" data-en="12.4K watching">1.2 万人在看</span>'
+          +     '<span style="margin-left:auto" data-cn="高清 720p" data-en="HD 720p">高清 720p</span></div>'
+          + '</div>';
+  } else if (m.st === 'done'){
+    stage = '<div class="vstage dim">'
+          +   '<span class="vs-badge" style="background:rgba(58,56,51,.95)" data-cn="回放" data-en="REPLAY">回放</span>'
+          +   '<div class="vs-play">' + PLAY + '</div>'
+          +   '<div class="vs-foot"><b>Wahda Live</b>'
+          +     '<span data-cn="全场回放 · 90′" data-en="Full replay · 90′">全场回放 · 90′</span>'
+          +     '<span style="margin-left:auto" data-cn="高清 720p" data-en="HD 720p">高清 720p</span></div>'
+          + '</div>';
+  } else {
+    stage = '<div class="vstage dim">'
+          +   '<span class="vs-badge" style="background:rgba(58,56,51,.95)" data-cn="未开播" data-en="NOT STARTED">未开播</span>'
+          +   '<span class="vs-note" data-cn="比赛开始前 15 分钟开播，开播后此处播放视频直播" data-en="Stream opens 15 minutes before kick-off">比赛开始前 15 分钟开播，开播后此处播放视频直播</span>'
+          + '</div>';
+  }
   if (isLive){
     head = '<div class="lb-head">'
-         +   '<span class="lb-live"><span class="live-dot"></span>LIVE</span>'
+         +   '<span class="lb-live"><span class="live-dot"></span><span data-cn="直播中" data-en="LIVE">直播中</span></span>'
          +   '<div class="lb-score">'
          +     '<div class="lb-tm">' + crestHTML(H) + '<b data-cn="' + H.cn + '" data-en="' + enName(H) + '">' + H.cn + '</b></div>'
          +     '<div class="lb-num">' + m.sc[0] + '<em>-</em>' + m.sc[1] + '</div>'
@@ -1397,9 +1436,9 @@ function openLive(id){
           +   formBlock(H) + formBlock(A)
           + '</div>';
   }
-  document.getElementById('liveBody').innerHTML = head + extra
+  document.getElementById('liveBody').innerHTML = stage + head + extra
     + liveXLink(m)
-    + '<p class="legal" data-cn="实时数据由官方数据服务商提供。集锦与回放将在授权范围内于赛后上线。" data-en="Live data provided by the official data partner. Highlights and replays go live after the match, within licensed scope.">实时数据由官方数据服务商提供。集锦与回放将在授权范围内于赛后上线。</p>';
+    + '<p class="legal" data-cn="视频直播与集锦由持权方授权提供，实时数据由官方数据服务商提供。" data-en="Live video and highlights are provided under licence; live data comes from the official data partner.">视频直播与集锦由持权方授权提供，实时数据由官方数据服务商提供。</p>';
   go('pg-live');
   applyLang();
 }
@@ -2324,7 +2363,7 @@ function renderClubFx(c){
     document.getElementById('clubFx').innerHTML =
         '<div class="empty" style="padding:22px 18px">'
       +   '<b data-cn="暂无赛程" data-en="No fixtures yet">暂无赛程</b>'
-      +   '<p data-cn="该俱乐部尚未进入本赛季赛程，关注后开票第一时间通知你" data-en="This club isn\u2019t in this season\u2019s schedule yet. Follow them and we\u2019ll let you know the moment tickets go on sale.">该俱乐部尚未进入本赛季赛程，关注后开票第一时间通知你</p>'
+      +   '<p data-cn="该俱乐部尚未进入本赛季赛程，关注后开票第一时间通知你" data-en="This club isn’t in this season’s schedule yet. Follow them and we’ll let you know the moment tickets go on sale.">该俱乐部尚未进入本赛季赛程，关注后开票第一时间通知你</p>'
       +   '<button class="btn btn-soft" onclick="toggleFollow()" id="clubFxFollow" data-cn="＋ 关注" data-en="+ Follow">＋ 关注</button>'
       + '</div>';
     return;
@@ -2380,7 +2419,7 @@ function renderMyClubs(){
         return '<div class="club" role="button" tabindex="0" onclick="openClub(\'' + c.id + '\')">' + crestHTML(c)
              + '<span data-cn="' + c.cn + '" data-en="' + enName(c) + '">' + c.cn + '</span></div>';
       }).join('')
-    : '<div style="font-size:12px;color:var(--ink-3);padding:6px 0" data-cn="还没有关注任何俱乐部" data-en="You\u2019re not following any clubs yet">还没有关注任何俱乐部</div>';
+    : '<div style="font-size:12px;color:var(--ink-3);padding:6px 0" data-cn="还没有关注任何俱乐部" data-en="You’re not following any clubs yet">还没有关注任何俱乐部</div>';
   var sum = document.getElementById('myFollowSum');
   if (sum){
     sum.setAttribute('data-cn', '已关注 ' + f.length + ' 家俱乐部 · ' + REMINDERS.length + ' 条预约');
@@ -2485,7 +2524,7 @@ function renderFixtures(){
 }
 
 /* ══════════ 运行状态 ══════════ */
-var STATE = 'A';
+var STATE = 'B';
 function setState(s){
   STATE = s;
   document.querySelectorAll('[data-only]').forEach(function(el){
@@ -2660,7 +2699,7 @@ renderMyReminders();
 renderFixtures();
 renderTickets();
 renderOrders();
-setState('A');
+setState('B');
 applyLang();
 
 /* 时钟：每分钟刷新 */
